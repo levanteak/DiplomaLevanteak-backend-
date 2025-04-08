@@ -4,6 +4,7 @@ package com.diplom.levanteak.controller;
 import com.diplom.levanteak.dto.CategoryDto;
 import com.diplom.levanteak.dto.Response;
 import com.diplom.levanteak.service.interf.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/category")
 @RequiredArgsConstructor
+@Tag(name = "Category Controller")
 public class CategoryController {
 
     private final CategoryService categoryService;

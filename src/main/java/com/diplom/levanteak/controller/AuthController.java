@@ -5,6 +5,7 @@ import com.diplom.levanteak.dto.Response;
 import com.diplom.levanteak.service.interf.UserService;
 import com.diplom.levanteak.dto.LoginRequest;
 import com.diplom.levanteak.dto.UserDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth Controller")
 public class AuthController {
 
     private final UserService userService;

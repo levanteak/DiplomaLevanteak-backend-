@@ -25,7 +25,7 @@ public class JwtUtils {
     private SecretKey key;
 
     @Value("${secreteJwtString}")
-    private String secreteJwtString; //Make sure the value in the application properties is 32characters or long
+    private String secreteJwtString;
 
     @PostConstruct
     private void init(){
@@ -63,6 +63,4 @@ public class JwtUtils {
     private boolean isTokenExpired(String token){
         return extractClaims(token, Claims::getExpiration).before(new Date());
     }
-
-
 }

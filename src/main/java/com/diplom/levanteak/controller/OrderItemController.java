@@ -5,6 +5,7 @@ import com.diplom.levanteak.dto.OrderRequest;
 import com.diplom.levanteak.dto.Response;
 import com.diplom.levanteak.enums.OrderStatus;
 import com.diplom.levanteak.service.interf.OrderItemService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
+@Tag(name = "Order Controller")
 public class OrderItemController {
 
     private final OrderItemService orderItemService;

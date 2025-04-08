@@ -4,6 +4,7 @@ package com.diplom.levanteak.controller;
 import com.diplom.levanteak.exception.InvalidCredentialsException;
 import com.diplom.levanteak.dto.Response;
 import com.diplom.levanteak.service.interf.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@Tag(name = "Product Controller")
 public class ProductController {
 
     private final ProductService productService;

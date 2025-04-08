@@ -36,8 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response registerUser(UserDto registrationRequest) {
-        UserRole role = UserRole.USER;
+        log.info("Registering new user with email: {}", registrationRequest.getEmail());
 
+        UserRole role = UserRole.USER;
         if (registrationRequest.getRole() != null && registrationRequest.getRole().equalsIgnoreCase("admin")) {
             role = UserRole.ADMIN;
         }
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User savedUser = userRepo.save(user);
-        System.out.println(savedUser);
+        log.info("User successfully registered with ID: {}", savedUser.getId());
 
         UserDto userDto = entityDtoMapper.mapUserToDtoBasic(savedUser);
         return Response.builder()
@@ -65,12 +66,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response loginUser(LoginRequest loginRequest) {
+        log.info("Attempting login for email: {}", loginRequest.getEmail());
 
-        User user = userRepo.findByEmail(loginRequest.getEmail()).orElseThrow(()-> new NotFoundException("Email not found"));
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+        User user = userRepo.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> {
+                    log.warn("Login failed: email not found - {}", loginRequest.getEmail());
+                    return new NotFoundException("Email not found");
+                });
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            log.warn("Login failed for user {}: invalid password", loginRequest.getEmail());
             throw new InvalidCredentialsException("Password does not match");
         }
+
         String token = jwtUtils.generateToken(user);
+        log.info("Login successful for user ID: {}", user.getId());
 
         return Response.builder()
                 .status(200)
@@ -83,11 +93,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response getAllUsers() {
+        log.info("Fetching all users from database");
 
         List<User> users = userRepo.findAll();
         List<UserDto> userDtos = users.stream()
                 .map(entityDtoMapper::mapUserToDtoBasic)
                 .toList();
+
+        log.debug("Total users found: {}", userDtos.size());
 
         return Response.builder()
                 .status(200)
@@ -98,16 +111,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getLoginUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String  email = authentication.getName();
-        log.info("User Email is: " + email);
+        String email = authentication.getName();
+        log.info("Getting currently logged-in user: {}", email);
+
         return userRepo.findByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException("User Not found"));
+                .orElseThrow(() -> {
+                    log.warn("Logged-in user not found with email: {}", email);
+                    return new UsernameNotFoundException("User Not found");
+                });
     }
+
 
     @Override
     public Response getUserInfoAndOrderHistory() {
+        log.info("Fetching logged-in user info and order history");
         User user = getLoginUser();
         UserDto userDto = entityDtoMapper.mapUserToDtoPlusAddressAndOrderHistory(user);
+        log.debug("User info loaded for ID: {}", user.getId());
 
         return Response.builder()
                 .status(200)
